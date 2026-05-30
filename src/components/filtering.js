@@ -1,7 +1,20 @@
 import {createComparison, defaultRules} from "../lib/compare.js";
 
-// @todo: #4.3 — настроить компаратор
 const compare = createComparison(defaultRules);
+
+function prepareFilterState(state) {
+    const filterState = {...state};
+    const {totalFrom, totalTo} = filterState;
+
+    if (totalFrom || totalTo) {
+        filterState.total = [totalFrom, totalTo];
+    }
+
+    delete filterState.totalFrom;
+    delete filterState.totalTo;
+
+    return filterState;
+}
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
     Object.keys(indexes)                                    // Получаем ключи из объекта
@@ -35,7 +48,6 @@ export function initFiltering(elements, indexes) {
             state[field] = '';
         }
 
-        // @todo: #4.5 — отфильтровать данные используя компаратор
-        return data.filter(row => compare(row, state));
+        return data.filter(row => compare(row, prepareFilterState(state)));
     }
 }
